@@ -9,8 +9,9 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
+      # MailJob.perform_later(@user)
+      UserMailer.registration_confirmation(@user).deliver_later
       log_in(@user)
-      # UserMailer.registration_confirmation(@user).deliver_later
       redirect_to user_path(@user.id), notice: 'アカウントを登録しました。'
     else
       render :new
